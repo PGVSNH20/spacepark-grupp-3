@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace SpacePark
 {
+    
     //public class BloggingContext : DbContext
     //{
     //    public DbSet<Blog> Blogs { get; set; }
@@ -34,5 +35,5 @@ namespace SpacePark
 
     //    public int BlogId { get; set; }
     //    public Blog Blog { get; set; }
-    }
+    //}
 }
