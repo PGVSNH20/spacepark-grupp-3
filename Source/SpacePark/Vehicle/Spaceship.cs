@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SpacePark
 {
-    class Spaceship
+    public  class Spaceship
     {
         public string Name { get; set; }
         public string Model { get; set; }

@@ -8,43 +8,20 @@ namespace SpacePark
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            
-            GetPeople();
-            Thread.Sleep(20000);
+            SpaceshipReader spaceshipReader = new SpaceshipReader();
+            PeopleReader peopleReader  = new PeopleReader();
+            //peopleResult = new List<People>();
+            List<PeopleList> list = await peopleReader.GetPeople();
 
-        }
-        
-        // Tillfällig metod för att testa att ta fram karaktärer
-        public static async Task GetPeople() 
-        {
-            var pages = "";
-            var nextPage = 2;
-            var client = new RestClient("https://swapi.dev/api/");
-            
-            Console.WriteLine("Getting people...");
-            Console.WriteLine();
-            var runLoop = true;
-            do 
-            {
-                var request = new RestRequest("people/" + pages, DataFormat.Json);
-                var peopleResponse = await client.GetAsync<PeopleList>(request);
-                if (peopleResponse.Next == null) runLoop = false;
-                
-                foreach (var p in peopleResponse.Results)
-                {
-                    Console.WriteLine(p.Name);
-                }
 
-                pages = "?page=";
-                pages += nextPage.ToString();
-                nextPage++;
+            var peopleResult = peopleReader.GetPeople();
 
-            } while (runLoop);
+            var spaceshipsResult = spaceshipReader.GetSpaceship();
 
-            Console.WriteLine();
-            Console.WriteLine("Got all people");
+            Console.WriteLine(peopleResult);
+           
         }
     }
 }
