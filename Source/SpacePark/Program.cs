@@ -12,16 +12,28 @@ namespace SpacePark
         {
             SpaceshipReader spaceshipReader = new SpaceshipReader();
             PeopleReader peopleReader  = new PeopleReader();
-            //peopleResult = new List<People>();
-            List<PeopleList> list = await peopleReader.GetPeople();
 
+            // Tar in ett namn från användaren
+            Console.WriteLine("Name: ");
+            string input = Console.ReadLine();
+            input = input.Trim().ToLower();
 
-            var peopleResult = peopleReader.GetPeople();
+            var list = await peopleReader.GetPeople();
+            bool namePasses = false;
 
-            var spaceshipsResult = spaceshipReader.GetSpaceship();
+            // Loop för att kolla om det inmatade namnet matchar med ett namn i listan med karaktärer
+            foreach (var people in list)
+            {
+                if (input == people.Name.ToLower())
+                {
+                    namePasses = true;
+                    break;
+                }
+            }
 
-            Console.WriteLine(peopleResult);
-           
+            if (namePasses) Console.WriteLine("Input accepted");
+            else Console.WriteLine("Input not accepted");
+
         }
     }
 }
