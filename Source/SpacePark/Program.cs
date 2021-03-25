@@ -19,21 +19,58 @@ namespace SpacePark
             input = input.Trim().ToLower();
 
             var list = await peopleReader.GetPeople();
-            bool namePasses = false;
+            var character = ValidateInput(input, list);
+
+            if (character != null) Console.WriteLine("Input accepted");
+            else Console.WriteLine("Input not accepted");
+
+            var spaceshipList = await spaceshipReader.GetSpaceship();
+            var characterShips = GetSpaceship(character, spaceshipList);
+
+            Console.WriteLine();
+            Console.WriteLine($"{character.Name}'s ships");
+            foreach(var ship in characterShips)
+            {
+                Console.WriteLine(ship.Name);
+            }
+
+
+        }
+
+        static People ValidateInput(string input, List<People> list)
+        {
 
             // Loop för att kolla om det inmatade namnet matchar med ett namn i listan med karaktärer
             foreach (var people in list)
             {
                 if (input == people.Name.ToLower())
                 {
-                    namePasses = true;
-                    break;
+                    return people;
                 }
             }
 
-            if (namePasses) Console.WriteLine("Input accepted");
-            else Console.WriteLine("Input not accepted");
+            return null;
+        }
 
+        static List<Spaceship> GetSpaceship(People character, List<Spaceship> allSpaceships)
+        {
+            
+            
+            var listOfCharacterSpaceships = new List<Spaceship>();
+
+            foreach(var characterSpaceship in character.Starships)
+            {
+                foreach (var spaceship in allSpaceships)
+                {
+                    if (characterSpaceship == spaceship.Url)
+                    {
+                        listOfCharacterSpaceships.Add(spaceship);
+                        break;
+                    }
+                }
+            }
+
+            return listOfCharacterSpaceships;
         }
     }
 }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace SpacePark
 {
     
-    //public class BloggingContext : DbContext
+    //public class Context : DbContext
     //{
     //    public DbSet<Blog> Blogs { get; set; }
     //    public DbSet<Post> Posts { get; set; }

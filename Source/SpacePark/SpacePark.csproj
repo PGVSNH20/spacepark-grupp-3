@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <None Remove="Passengers\NewFile1.txt" />
+    <None Remove="Vehicle\NewFile1.txt" />
   </ItemGroup>
 
   <ItemGroup>
