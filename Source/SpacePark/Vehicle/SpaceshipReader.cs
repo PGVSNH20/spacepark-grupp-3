@@ -30,7 +30,7 @@ namespace SpacePark
                 {
 
                     listOfSpaceships.Add(p);
-                    Console.WriteLine(p.Name);
+                    // Console.WriteLine(p.Name);
                 }
 
                 pages = "?page=";

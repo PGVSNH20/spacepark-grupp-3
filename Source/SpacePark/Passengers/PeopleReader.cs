@@ -19,6 +19,7 @@ namespace SpacePark
 
             Console.WriteLine();
             Console.WriteLine("Getting people...");
+
             var runLoop = true;
             while (runLoop)
             {
@@ -29,19 +30,18 @@ namespace SpacePark
                 foreach (var p in peopleResponse.Results)
                 {
                     listOfPeople.Add(p);
-                    Console.WriteLine(p.Name);
+                    // Console.WriteLine(p.Name);
                 }
 
-            pages = "?page=";
-            pages += nextPage.ToString();
-            nextPage++;
-        };
+                pages = "?page=";
+                pages += nextPage.ToString();
+                nextPage++;
+            };
 
-        Console.WriteLine();
-        Console.WriteLine("Got all people");
+            Console.WriteLine();
+            Console.WriteLine("Got all people");
 
-        return listOfPeople;
+            return listOfPeople;
+        }
     }
-
-}
 }

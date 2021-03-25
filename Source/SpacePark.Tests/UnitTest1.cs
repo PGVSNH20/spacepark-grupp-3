@@ -9,7 +9,7 @@ namespace SpacePark.Tests
         [Fact]
         public void Test1()
         {
-            People p = new People();
+            // People p = new People();
         }
     }
 }
