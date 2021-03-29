@@ -9,8 +9,8 @@ using SpacePark;
 namespace SpacePark.Migrations
 {
     [DbContext(typeof(SpaceParkContext))]
-    [Migration("20210325154212_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20210329145527_InitialDBCreation")]
+    partial class InitialDBCreation
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

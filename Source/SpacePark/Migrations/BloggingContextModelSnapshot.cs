@@ -7,7 +7,7 @@ using SpacePark;
 
 namespace SpacePark.Migrations
 {
-    [DbContext(typeof(BloggingContext))]
+    [DbContext(typeof(SpaceParkContext))]
     partial class BloggingContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

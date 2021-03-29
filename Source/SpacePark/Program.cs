@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Linq;
+
 
 namespace SpacePark
 {
@@ -28,15 +30,47 @@ namespace SpacePark
             var characterShips = GetSpaceship(character, spaceshipList);
 
             Console.WriteLine();
-            Console.WriteLine($"{character.Name}'s ships");
+            Console.WriteLine($"Choose which spaceship you want to park: ");
 
-            foreach(var ship in characterShips)
+            for(int i = 0; i < characterShips.Count; i++)
             {
-                Console.WriteLine($"{ship.Name}");
+                Console.WriteLine($"{i}) {characterShips[i].Name}");
             }
+            Console.WriteLine();
+            Console.WriteLine("Input: ");
+            var shipInput = Console.ReadLine();
 
+            var chosenShip = -1;
+            for (int i = 0; i < characterShips.Count; i++)
+            {
+                if (shipInput == i.ToString()) chosenShip = i; 
+            }
+            if (chosenShip == -1) throw new Exception("Invalid ship input");
 
+            using (var db = new SpaceParkContext())
+            {
+                // Create and save a new Blog
+                Console.WriteLine("Input being saved to database");
+                var person = new People { Name = character.Name };
+                db.People.Add(person);
+                var ship = new Spaceship { Name = characterShips[chosenShip].Name };
+                db.Spaceship.Add(ship);
+                db.SaveChanges();
 
+                // Display all Blogs from the database
+                var query = from b in db.People
+                            orderby b.Name
+                            select b;
+
+                Console.WriteLine("All people in the database:");
+                foreach (var item in query)
+                {
+                    Console.WriteLine(item.Name);
+                }
+
+                Console.WriteLine("Press any key to exit...");
+                Console.ReadKey();
+            }
 
             //using (var db = new BloggingContext())
             //{
