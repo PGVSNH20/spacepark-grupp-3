@@ -33,45 +33,45 @@ namespace SpacePark
             Console.WriteLine("Do you want to enter or exit parking?");
             Console.WriteLine("1) Enter");
             Console.WriteLine("2) Exit");
-            //var enterOrExitInput = Convert.ToInt32(Console.ReadLine());
+            var enterOrExitInput = Convert.ToInt32(Console.ReadLine());
 
-            //if(enterOrExitInput == 1)
+            if (enterOrExitInput == 1)
+            {
+                ParkSpaceShip(character, characterShips);
+            }
+            else
+            {
+                CheckOutSpaceship(character);
+            }
+
+            //Console.WriteLine();
+            //Console.WriteLine($"Choose which spaceship you want to park: ");
+
+            //// Skriver ut rymdskepp som hör till karaktären
+            //for (int i = 0; i < characterShips.Count; i++)
             //{
-            //    ParkSpaceShip(character, characterShips);
+            //    Console.WriteLine($"{i}) {characterShips[i].Name}");
             //}
-            //else
+
+            //// Tar in vilket rymdskepp användaren vill parkera
+            //Console.WriteLine();
+            //Console.Write("Input: ");
+            //var shipInput = Console.ReadLine();
+
+            //var chosenShip = -1;
+            //for (int i = 0; i < characterShips.Count; i++)
             //{
-            //    CheckOutSpaceship(character);
+            //    if (shipInput == i.ToString()) chosenShip = i;
             //}
+            //if (chosenShip == -1) throw new Exception("Invalid ship input");
 
-            Console.WriteLine();
-            Console.WriteLine($"Choose which spaceship you want to park: ");
-
-            // Skriver ut rymdskepp som hör till karaktären
-            for (int i = 0; i < characterShips.Count; i++)
-            {
-                Console.WriteLine($"{i}) {characterShips[i].Name}");
-            }
-
-            // Tar in vilket rymdskepp användaren vill parkera
-            Console.WriteLine();
-            Console.Write("Input: ");
-            var shipInput = Console.ReadLine();
-
-            var chosenShip = -1;
-            for (int i = 0; i < characterShips.Count; i++)
-            {
-                if (shipInput == i.ToString()) chosenShip = i;
-            }
-            if (chosenShip == -1) throw new Exception("Invalid ship input");
-
-            using (var db = new SpaceParkContext())
-            {
-                Console.WriteLine("Input being saved to database");
-                var parking = new Parking { Name = character.Name, Spaceship = characterShips[chosenShip].Name, ParkingStart = DateTime.Now };
-                db.Parking.Add(parking);
-                db.SaveChanges();
-            }
+            //using (var db = new SpaceParkContext())
+            //{
+            //    Console.WriteLine("Input being saved to database");
+            //    var parking = new Parking { Name = character.Name, Spaceship = characterShips[chosenShip].Name, ParkingStart = DateTime.Now };
+            //    db.Parking.Add(parking);
+            //    db.SaveChanges();
+            //}
         }
 
         static People ValidateInput(string input, List<People> list)
@@ -155,23 +155,23 @@ namespace SpacePark
 
                 for (int i = 0; i < newList.Count; i++)
                 {
-                    Console.WriteLine($"{i}) {newList[i]}");
+                    Console.WriteLine($"{i}) {newList[i].Spaceship}");
                 }
 
                 var choice = Convert.ToInt32(Console.ReadLine());
 
                 var shipToCheckOut = from a in db.Parking
-                                     where a.Name == character.Name && a.Spaceship == newList[choice].Name
+                                     where a.Name == character.Name && a.Spaceship == newList[choice].Spaceship && newList[choice].Payment == 0
                                      select a;
 
-                foreach (var item in shipToCheckOut)
-                {
-                    item.ParkingEnd = DateTime.Now;
-                    var duration = (item.ParkingStart - item.ParkingEnd).Duration();
-                    item.Payment = (decimal)duration.TotalSeconds * 10;
-                    db.SaveChanges();
-                    Console.WriteLine($"You parked for {duration} seconds and were billed {item.Payment} galactic credit standard");
-                }
+                var shipToCheckOutList = shipToCheckOut.ToList();
+
+                shipToCheckOutList[0].ParkingEnd = DateTime.Now;
+                var duration = (shipToCheckOutList[0].ParkingStart - shipToCheckOutList[0].ParkingEnd).Duration();
+                shipToCheckOutList[0].Payment = (decimal)duration.TotalSeconds * 10;
+                db.SaveChanges();
+                Console.WriteLine($"You parked for {duration} seconds and were billed {shipToCheckOutList[0].Payment} credits");
+
             }
         }
     }
