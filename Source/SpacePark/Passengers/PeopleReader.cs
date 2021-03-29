@@ -1,9 +1,6 @@
 ﻿using RestSharp;
-using SpacePark;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SpacePark
@@ -26,11 +23,9 @@ namespace SpacePark
                 var request = new RestRequest("people/" + pages, DataFormat.Json);
                 var peopleResponse = await client.GetAsync<PeopleList>(request);
                 if (peopleResponse.Next == null) runLoop = false;
-
                 foreach (var p in peopleResponse.Results)
                 {
                     listOfPeople.Add(p);
-                    // Console.WriteLine(p.Name);
                 }
 
                 pages = "?page=";
@@ -38,7 +33,6 @@ namespace SpacePark
                 nextPage++;
             };
 
-            Console.WriteLine();
             Console.WriteLine("Got all people");
 
             return listOfPeople;

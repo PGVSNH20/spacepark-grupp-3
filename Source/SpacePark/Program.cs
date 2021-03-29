@@ -1,7 +1,5 @@
-﻿using RestSharp;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
 
@@ -15,21 +13,35 @@ namespace SpacePark
             SpaceshipReader spaceshipReader = new SpaceshipReader();
             PeopleReader peopleReader = new PeopleReader();
 
-            // Tar in ett namn från användaren
-            Console.WriteLine("Name: ");
-            string input = Console.ReadLine();
-            input = input.Trim().ToLower();
+            // Välkomnar och tar in ett namn från användaren
+            Console.WriteLine("Welcome to Space Park!");
+            Console.WriteLine();
+            
+            People character = new People();
+            var runNameCheckLoop = true;
+            while (runNameCheckLoop)
+            {
+                Console.Write("Name: ");
+                string nameInput = Console.ReadLine();
+                nameInput = nameInput.Trim().ToLower();
 
-            var list = await peopleReader.GetPeople();
-            var character = ValidateInput(input, list);
+                var list = await peopleReader.GetPeople();
+                character = ValidateInput(nameInput, list);
 
-            if (character != null) Console.WriteLine("Input accepted");
-            else Console.WriteLine("Input not accepted");
+                if (character == null) Console.WriteLine("Input not accepted");
+                else
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("Input accepted");
+                    Console.WriteLine();
+                    runNameCheckLoop = false;
+                }
+            }
 
             var spaceshipList = await spaceshipReader.GetSpaceship();
             var characterShips = GetSpaceship(character, spaceshipList);
 
-
+            Console.WriteLine();
             Console.WriteLine("Do you want to enter or exit parking?");
             Console.WriteLine("1) Enter");
             Console.WriteLine("2) Exit");
@@ -43,35 +55,6 @@ namespace SpacePark
             {
                 CheckOutSpaceship(character);
             }
-
-            //Console.WriteLine();
-            //Console.WriteLine($"Choose which spaceship you want to park: ");
-
-            //// Skriver ut rymdskepp som hör till karaktären
-            //for (int i = 0; i < characterShips.Count; i++)
-            //{
-            //    Console.WriteLine($"{i}) {characterShips[i].Name}");
-            //}
-
-            //// Tar in vilket rymdskepp användaren vill parkera
-            //Console.WriteLine();
-            //Console.Write("Input: ");
-            //var shipInput = Console.ReadLine();
-
-            //var chosenShip = -1;
-            //for (int i = 0; i < characterShips.Count; i++)
-            //{
-            //    if (shipInput == i.ToString()) chosenShip = i;
-            //}
-            //if (chosenShip == -1) throw new Exception("Invalid ship input");
-
-            //using (var db = new SpaceParkContext())
-            //{
-            //    Console.WriteLine("Input being saved to database");
-            //    var parking = new Parking { Name = character.Name, Spaceship = characterShips[chosenShip].Name, ParkingStart = DateTime.Now };
-            //    db.Parking.Add(parking);
-            //    db.SaveChanges();
-            //}
         }
 
         static People ValidateInput(string input, List<People> list)
@@ -91,8 +74,6 @@ namespace SpacePark
 
         static List<Spaceship> GetSpaceship(People character, List<Spaceship> allSpaceships)
         {
-
-
             var listOfCharacterSpaceships = new List<Spaceship>();
 
             foreach (var characterSpaceship in character.Starships)
@@ -110,6 +91,7 @@ namespace SpacePark
             return listOfCharacterSpaceships;
         }
 
+        // Metod för att parkera rymdskepp
         static void ParkSpaceShip(People character, List<Spaceship> characterShips)
         {
             Console.WriteLine();
@@ -141,6 +123,8 @@ namespace SpacePark
                 db.SaveChanges();
             }
         }
+
+        // Metod för att avsluta parking
         static void CheckOutSpaceship(People character)
         {
 
@@ -149,7 +133,7 @@ namespace SpacePark
 
                 Console.WriteLine("Which spaceship do you want to check out?");
                 var characterShips = from b in db.Parking
-                                     where b.Name == character.Name
+                                     where b.Name == character.Name && b.Payment == 0
                                      select b;
                 var newList = characterShips.ToList();
 
@@ -167,10 +151,11 @@ namespace SpacePark
                 var shipToCheckOutList = shipToCheckOut.ToList();
 
                 shipToCheckOutList[0].ParkingEnd = DateTime.Now;
-                var duration = (shipToCheckOutList[0].ParkingStart - shipToCheckOutList[0].ParkingEnd).Duration();
-                shipToCheckOutList[0].Payment = (decimal)duration.TotalSeconds * 10;
+                var duration = (shipToCheckOutList[0].ParkingStart - shipToCheckOutList[0].ParkingEnd).Duration().TotalSeconds;
+                shipToCheckOutList[0].Payment = Math.Round((decimal)(duration * 10));
                 db.SaveChanges();
-                Console.WriteLine($"You parked for {duration} seconds and were billed {shipToCheckOutList[0].Payment} credits");
+                Console.WriteLine($"You parked for {duration} seconds and were billed {shipToCheckOutList[0].Payment} republic credits");
+                
 
             }
         }
